@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+	<!-- 1.名称空间  名称空间应该跟接口的全路径一致 -->
+	<mapper namespace="com.niit.mapper.FTMapper">  
+	
+		<!-- 2.SQL sqlID应该跟接口的方法名称一致 -->
+		<!-- 因为在 mybatis-conf.xml中定义了别名 所以用 DT代表com.niit.model.FoodType-->
+		
+		<!-- select语句 查询FoodType的所有数据 -->
+		<select id="getAll" resultType="FT" parameterType="com.niit.page.Page">
+			select * from foodtype limit #{beginIndex},#{pageSize}
+		</select>
+		
+		<!-- 查询总的数据行数 -->
+    	<select id="getTotalCount" resultType="int">
+       		select count(*) from foodtype
+	    </select>
+	
+		<!-- insert语句 添加菜系名字还有是否预定 -->
+		<insert id="save" parameterType="FT">
+			insert into foodtype (typeName) 
+			values(#{typeName})
+		</insert>
+		
+		<!-- select语句 查询DinnerTable的主键 -->
+		<select id="findById" parameterType="int" resultType="FT">
+			select * from foodtype where id=#{id}
+		</select>
+		
+		<!-- update语句 更新菜系信息 -->
+		<update id="update" parameterType="FT">
+			update foodtype set typeName=#{typeName} where id=#{id}
+		</update>
+		
+		<!-- delete语句 删除菜系信息 -->
+		<delete id="delete" parameterType="int">
+			delete from foodtype where id=#{id}
+		</delete>
+	</mapper>
+	
+		

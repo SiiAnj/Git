@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+	<!-- 1.名称空间  名称空间应该跟接口的全路径一致 -->
+	<mapper namespace="com.niit.mapper.DTMapper">  
+	
+		<!-- 2.SQL sqlID应该跟接口的方法名称一致 -->
+		<!-- 因为在 mybatis-conf.xml中定义了别名 所以用 DT代表com.niit.model.DinnerTable-->
+		
+		<!-- select语句 查询DinnerTable的所有数据 -->
+		<select id="getAll" resultType="DT" parameterType="com.niit.page.Page">
+			select * from dinnertable limit #{beginIndex},#{pageSize}
+		</select>
+		
+		 <!-- 查询总的数据行数 -->
+    	<select id="getTotalCount" resultType="int">
+       		select count(*) from dinnertable
+   	 	</select>
+		
+		<!-- select语句 查询DinnerTable的主键 -->
+		<select id="findById" parameterType="int" resultType="DT">
+			select * from dinnertable where id=#{id}
+		</select>
+		
+		<!-- insert语句 插入餐桌名字还有是否预定 -->
+		<insert id="save" parameterType="DT">
+			insert into dinnertable (tableName,tableStatus) 
+			values(#{tableName},0)
+		</insert>
+		
+		<!-- update语句 更新餐桌预定 预定时间 -->
+		<update id="reserve">
+			update dinnertable set tableStatus=1, orderDate=now() where id=#{id}
+		</update>
+		
+		<insert id="insertOrder" parameterType="O">
+			INSERT into orders (table_id,orderDate_dt) 
+			SELECT id,orderDate from dinnertable 
+			WHERE dinnertable.tableStatus=1 and dinnertable.orderDate=now()
+			<!-- INSERT into orders (table_id,orderDate_dt) 
+			SELECT id,orderDate from dinnertable 
+			WHERE tableStatus=1 and orderDate=now() -->
+		</insert>
+		
+		<update id="insertorderFood">
+			update food set orderId=(select id from orders WHERE 1 ORDER BY id DESC LIMIT 1)
+		</update>
+		
+		<insert id="insertorderOrderDetail" parameterType="OD">
+			insert into orderdetail (orderId,food_id,price,mprice) 
+			SELECT orderId,id,price,mprice from food
+		</insert>
+		
+		<select id="foodCount" parameterType="string" resultType="Integer">
+			select COUNT(*) from food
+		</select>
+		
+		
+		<!-- update语句 更新餐厅退桌 -->
+		<update id="unsubscribe">
+			update dinnertable set tableStatus=0, orderDate=null where id=#{id}
+		</update>
+		
+		<update id="updateOrder">
+			update orders o,(select * from dinnertable)dt 
+			set o.orderStatus=2, o.totalPrice=0 
+			where dt.id=o.table_id and dt.orderDate=o.orderDate_dt and dt.id=#{id}
+		</update>
+		
+		<!-- delete语句 删除餐桌信息 -->
+		<delete id="delete" parameterType="int">
+			delete from dinnertable where id=#{id}
+		</delete>
+	</mapper>
+	
+		

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+  <configuration>
+  	<!-- 别名  在这里定义别名是为了在DTMapper.xml中的resultType，parameterType中精简代码-->
+  	<typeAliases>
+  		<typeAlias type="com.niit.model.DinnerTable" alias="DT"/>
+  		<typeAlias type="com.niit.model.FoodType" alias="FT"/>
+  		<typeAlias type="com.niit.model.Food" alias="F"/>
+  		<typeAlias type="com.niit.model.Orders" alias="O"/>
+  		<typeAlias type="com.niit.model.OrderDetail" alias="OD"/>
+  	</typeAliases>
+  	
+  	<!-- 加载Mapper.xml文件    因为用接口和 mapper.xml混合方式
+     	  所以 必须把Mapper接口和Mapper.xml文件同一个文件夹底下 -->
+  	<mappers>
+  		<mapper resource="com/niit/mapper/DTMapper.xml"/>
+  		<mapper resource="com/niit/mapper/FTMapper.xml"/>
+  		<mapper resource="com/niit/mapper/FMapper.xml"/>
+  		<mapper resource="com/niit/mapper/OMapper.xml"/>
+  		<mapper resource="com/niit/mapper/ODMapper.xml"/>
+  	</mappers>
+  </configuration>

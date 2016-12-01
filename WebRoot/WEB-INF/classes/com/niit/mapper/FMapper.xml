@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+	<!-- 1.名称空间  名称空间应该跟接口的全路径一致 -->
+	<mapper namespace="com.niit.mapper.FMapper">  
+	
+		<!-- 2.SQL sqlID应该跟接口的方法名称一致 -->
+		<!-- 因为在 mybatis-conf.xml中定义了别名 所以用 F代表com.niit.model.Food-->
+		
+		<!-- select语句 查询Food的所有数据 -->
+		<select id="getAll" resultMap="F" parameterType="com.niit.page.Page">
+			select f.id,f.foodName,ft.typeName,f.price,f.mprice FROM food AS f,foodtype AS ft WHERE f.foodType_id=ft.id limit #{beginIndex},#{pageSize}
+		</select>
+		
+		<!-- 查询总的数据行数 -->
+    	<select id="getTotalCount" resultType="int">
+       		select count(*) from food
+   	 	</select>
+		
+		<!-- insert语句 添加Food -->
+		<insert id="save" parameterType="F">
+			insert into food (foodName,foodType_id,price,mprice,remark) 
+			values(#{foodName},#{foodType_id},#{price},#{mprice},#{remark})
+		</insert>
+		
+		<!-- update语句 更新图片 -->
+		<update id="upImg" parameterType="F" >
+			update food set img=#{img} where id=#{id} <!-- 1 ORDER BY id DESC LIMIT 1 -->
+		</update>
+		
+		<!-- select语句 查询Food的主键 -->
+		<select id="findById" parameterType="int" resultType="F">
+			select * from food where id=#{id}
+		</select>
+		
+		<!-- select语句 查询Food的name -->
+		<select id="findByName" parameterType="String" resultType="F">
+			select * from food where foodName=#{foodName}
+		</select>
+		
+		<!-- update语句 更新Food信息 -->
+		<update id="update" parameterType="F" >
+			update food set foodName=#{foodName},foodType_id=#{foodType_id},price=#{price},mprice=#{mprice},remark=#{remark} where id=#{id}
+		</update>
+		
+		<!-- delete语句 删除Food信息 -->
+		<delete id="delete" parameterType="int">
+			delete from food where id=#{id}
+		</delete>
+		
+		<!-- 映射 -->
+		<resultMap type="com.niit.model.Food" id="F">
+			<id column="id" property="id"/>
+			<result column="typeName" property="typeName"/>
+		</resultMap>
+	</mapper>
+	
+		

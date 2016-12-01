@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+	<!-- 1.名称空间  名称空间应该跟接口的全路径一致 -->
+	<mapper namespace="com.niit.mapper.ODMapper">  
+	
+		<!-- 2.SQL sqlID应该跟接口的方法名称一致 -->
+		<!-- 因为在 mybatis-conf.xml中定义了别名 所以用 F代表com.niit.model.Order-->
+		
+		<!-- select语句 查询order的所有数据 -->
+		<select id="getAll" resultType="OD" parameterType="com.niit.page.Page">
+			select od.food_id,f.foodName,f.price,f.mprice,od.foodStatus,od.foodCount
+			from orderdetail od,food f 
+			where od.food_id=f.id and od.orderId=#{id}
+		</select>
+		
+		<select id="getFood" resultType="F">
+			select * from food
+		</select>
+		
+		<select id="getOD" resultType="OD">
+			select foodStatus,foodCount from orderdetail
+		</select>
+		
+		<update id="AdditionFood">
+			update orderdetail set foodStatus=1,foodCount=foodCount+1 where orderId=#{orderId} and food_id=#{id}
+			<!-- update food f,(select * from orderdetail)od set f.foodStatus=1,f.foodCount=+1 where f.id=od.food_id and f.id=#{id} -->
+		</update>
+		
+		<update id="CountPrice" parameterType="int">
+			update orders 
+			set totalPrice=(select sum(foodCount*price) 
+			from orderdetail 
+			where foodStatus=1 
+			and orderId=#{orderId}),orderDate=now()
+			where orderStatus=0 
+			and id=#{orderId}
+		</update>
+		
+		<update id="CountMprice">
+			update orders 
+			set totalPrice=(select sum(foodCount*price) from orderdetail 
+			where foodStatus=1 
+			and orderId=#{orderId}) 
+			and id=#{orderId}
+		</update>
+	
+		<update id="SubtractionFood">
+			update orderdetail set foodStatus=foodCount-1,foodCount=foodCount-1 where orderId=#{orderId} and food_id=#{id}
+			<!-- update food f,(select * from orderdetail)od set f.foodStatus=1,f.foodCount=+1 where f.id=od.food_id and f.id=#{id} -->
+		</update>
+		
+		<update id="cancel">
+			update orderdetail set foodStatus=0,foodCount=0 where food_id=#{id}
+		</update>
+		
+		<update id="updateOD">
+			UPDATE food f,(SELECT * from orderdetail)od 
+			set f.foodCount=od.foodCount,f.foodStatus=od.foodStatus 
+			where od.food_id=f.id and od.orderId=#{oid}
+		</update>
+	</mapper>
+	
+		
